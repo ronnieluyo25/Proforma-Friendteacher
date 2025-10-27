@@ -3,12 +3,15 @@ const { Pool } = require('pg');
 let _pool;
 function getPool() {
   if (!_pool) {
+    const cs = process.env.NEON_DATABASE_URL;
+    if (!cs) throw new Error('NEON_DATABASE_URL not set');
+
     _pool = new Pool({
-      connectionString: process.env.NEON_DATABASE_URL,
+      connectionString: cs,
+      // Recomendado para Neon desde Vercel
       ssl: { rejectUnauthorized: false }
     });
   }
   return _pool;
 }
-
 module.exports = { getPool };
