@@ -114,7 +114,7 @@ function generarProforma() {
   const phPaquete = $('#phPaquete');
   if (phAlumno)  phAlumno.textContent = alumno;
   if (phTutor)   phTutor.textContent  = tutor;
-  if (phPaquete) phPaquete.textContent = `${nSecciones} ${nSecciones===1?'sección':'secciones'} - ${totalHoras.toFixed(2)} horas totales`;
+  if (phPaquete) phPaquete.textContent = `${nSecciones} ${nSecciones===1?'sesión':'sesiones'} - ${totalHoras.toFixed(2)} horas totales`;
 
   renderDetalle(filas);
   $('#exportArea')?.classList.remove('hidden');
