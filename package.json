@@ -1,0 +1,12 @@
+{
+  "name": "friendteacher-proforma",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "pg": "^8.12.0"
+  }
+}
