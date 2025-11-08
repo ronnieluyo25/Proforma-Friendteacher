@@ -1,12 +1,26 @@
-// api/pdf.js
-// Requiere: puppeteer-core y @sparticuz/chromium en package.json (dependencies)
+// api/pdf.js — Serverless en Vercel (Node 20)
+// Usa puppeteer-core + @sparticuz/chromium (sin Edge).
 
 const fs = require("fs");
 const path = require("path");
 const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-core");
 
-/* Utilidades pequeñas */
+/* ===== Ajustes recomendados por @sparticuz ===== */
+chromium.setHeadlessMode = true; // fuerza headless real
+chromium.setGraphicsMode = false; // sin aceleración gráfica
+
+async function launchBrowser() {
+  const executablePath = await chromium.executablePath(); // binario de chromium empacado
+  return puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath,
+    headless: chromium.headless,
+  });
+}
+
+/* ===== Utilidades ===== */
 function esc(s) {
   return String(s ?? "")
     .replace(/&/g, "&amp;")
@@ -16,12 +30,10 @@ function esc(s) {
     .replace(/'/g, "&#39;");
 }
 function num(n, dec = 2) {
-  const x = Number(n || 0);
-  return x.toFixed(dec);
+  return Number(n || 0).toFixed(dec);
 }
 function formatPEN(n) {
-  const v = Number(n || 0);
-  return `S/ ${v.toFixed(2)}`;
+  return `S/ ${Number(n || 0).toFixed(2)}`;
 }
 function todayPE() {
   const d = new Date();
@@ -52,38 +64,30 @@ function rowsToHTML(filas = []) {
 module.exports = async (req, res) => {
   try {
     /* ============================
-       PASO 1: PRUEBA RÁPIDA (?test=1)
+       TEST RÁPIDO: /api/pdf?test=1
+       (descarta problemas de Chromium)
        ============================ */
     if (req.method === "GET" && req.query.test === "1") {
-      const executablePath = await chromium.executablePath();
-      const browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath,
-        headless: chromium.headless,
-      });
-
+      const browser = await launchBrowser();
       const page = await browser.newPage();
       await page.setContent(
         `
         <!doctype html><html><body style="font-family:system-ui; padding:24px">
           <h1>PDF OK</h1>
-          <p>Render básico sin plantilla. Puppeteer + Chromium están funcionando 👍</p>
+          <p>Puppeteer + @sparticuz/chromium funcionando 👍</p>
           <small>${new Date().toISOString()}</small>
         </body></html>
       `,
         { waitUntil: "load" }
       );
-
       const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
       await browser.close();
-
       res.setHeader("Content-Type", "application/pdf");
       return res.status(200).send(pdfBuffer);
     }
 
     /* ============================
-       CARGA DE PLANTILLAS (HTML/CSS)
+       Leer plantillas HTML/CSS
        ============================ */
     let htmlTpl, cssTpl;
     try {
@@ -114,7 +118,7 @@ module.exports = async (req, res) => {
     }
 
     /* ============================
-       ENTRADA DE DATOS (GET demo / POST real)
+       Payload: POST (real) o GET (demo)
        ============================ */
     let payload = {};
     if (req.method === "POST") {
@@ -129,7 +133,6 @@ module.exports = async (req, res) => {
           .json({ error: "BAD_JSON", detail: String(e?.message || e) });
       }
     } else {
-      // GET demo para probar rápido sin frontend
       payload = {
         alumno: req.query.alumno || "Alumno Demo",
         tutor: req.query.tutor || "Tutor Demo",
@@ -173,7 +176,6 @@ module.exports = async (req, res) => {
       filas = [],
       totales = {},
     } = payload;
-
     const totalHoras =
       totales.totalHoras ?? filas.reduce((a, b) => a + Number(b.horas || 0), 0);
     const totalImporte =
@@ -192,16 +194,9 @@ module.exports = async (req, res) => {
       .replace("{{TOTAL_IMPORTE}}", esc(formatPEN(totalImporte)));
 
     /* ============================
-       RENDER PDF (Puppeteer + Chromium)
+       Render PDF
        ============================ */
-    const executablePath = await chromium.executablePath();
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath,
-      headless: chromium.headless,
-    });
-
+    const browser = await launchBrowser();
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
 
@@ -221,7 +216,6 @@ module.exports = async (req, res) => {
     );
     return res.status(200).send(pdfBuffer);
   } catch (e) {
-    // Errores genéricos (incluye puppeteer/chromium)
     return res
       .status(500)
       .json({ error: "PDF_ERROR", detail: String(e?.message || e) });
