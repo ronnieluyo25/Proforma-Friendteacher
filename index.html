@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="es-PE">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Proforma - FriendTeacher</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css" />
+  <!-- Nombre corregido: styles.css -->
+  <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body class="bg-gray-100 leading-relaxed">
-  <div class="card mx-auto max-w-[1100px] px-4">
+  <div class="card mx-auto max-w-[1100px] px-4 py-6">
     <div class="flex flex-col items-center mb-6 space-y-3">
       <!-- Título centrado -->
       <h1 class="text-2xl font-bold text-blue-700 tracking-wide text-center">
@@ -68,9 +68,10 @@
       </div>
     </div>
 
-    <div class="flex gap-3 mb-4">
+    <div class="flex flex-wrap gap-3 mb-6">
       <button id="generarBtn" class="btn btn-primary">Generar Proforma</button>
-      <button id="pdfBtn" class="btn btn-success" disabled>Descargar PDF</button>
+      <button id="pdfBtn" class="btn btn-success" disabled>Descargar PDF (Cliente)</button>
+      <button id="pdfSrvBtn" class="btn btn-success outline" disabled>Descargar PDF (Diseño Pro)</button>
     </div>
 
     <div id="exportArea" class="hidden">
@@ -91,18 +92,15 @@
         </table>
       </div>
 
-
       <!-- 📘 TEXTO ESTÁTICO DE CONSIDERACIONES -->
       <div class="text-sm text-gray-700 leading-relaxed border-t border-gray-300 pt-4">
         <h3 class="font-bold text-blue-700 mb-1">Consideraciones</h3>
         <ol class="list-decimal pl-5 space-y-1">
           <li>
-            Para <strong>reservar las fechas indicadas</strong>, el <strong>pago deberá efectuarse por adelantado</strong>, considerando el cierre del año
-            académico y la alta demanda de horarios.
+            Para <strong>reservar las fechas indicadas</strong>, el <strong>pago deberá efectuarse por adelantado</strong>, considerando el cierre del año académico y la alta demanda de horarios.
           </li>
           <li>
-            Las clases programadas después de las 9:00 p.m., fines de semana o feriados estarán <strong>sujetas a una tarifa
-            diferenciada y a la disponibilidad del tutor.</strong>
+            Las clases programadas después de las 9:00 p.m., fines de semana o feriados estarán <strong>sujetas a una tarifa diferenciada y a la disponibilidad del tutor.</strong>
             Le agradeceremos consultar previamente para confirmar el monto y horario disponible.
           </li>
           <li>
@@ -112,10 +110,8 @@
         </ol>
       </div>
     </div>
+  </div>
 
-  </div>
-  </div>
   <script src="/script.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,17 @@
+{
+    "functions": {
+        "api/pdf.js": {
+            "runtime": "nodejs20.x",
+            "memory": 1024,
+            "maxDuration": 30
+        },
+        "api/*.js": {
+            "runtime": "nodejs20.x"
+        }
+    },
+    "cleanUrls": true,
+    "regions": [
+        "iad1",
+        "sfo1"
+    ]
+}

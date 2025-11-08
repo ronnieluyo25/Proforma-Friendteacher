@@ -12,6 +12,10 @@ function clampInt(v,min,max){ v=parseInt(v,10); if(isNaN(v)) v=min; return Math.
 
 const DIAS = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 
+/********** Estado para PDF servidor **********/
+window.FILAS_ACTUALES = [];
+window.META_ACTUAL = { alumno:'', tutor:'', paquete:'' };
+
 /********** Llenar selects desde API **********/
 async function cargarSelect(url, selectEl, labelKey = 'nombre') {
   try {
@@ -21,7 +25,7 @@ async function cargarSelect(url, selectEl, labelKey = 'nombre') {
     selectEl.innerHTML = data.map(it => `<option value="${esc(it[labelKey])}">${esc(it[labelKey])}</option>`).join('');
   } catch (e) {
     console.error('Error cargando', url, e);
-    selectEl.innerHTML = `<option value="">(error)</option>`;
+    selectEl.innerHTML = `<option value="">(sin datos)</option>`;
   }
 }
 
@@ -50,8 +54,7 @@ function renderDetalle(rows) {
       <td class="text-right">${Number(r.horas||0).toFixed(2)}</td>
       <td class="text-right">S/ ${Number(r.precioHora||0).toFixed(2)}</td>
       <td class="text-right font-semibold">S/ ${Number(r.importe||0).toFixed(2)}</td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 
   const totalHoras = rows.reduce((a,b)=>a+Number(b.horas||0),0);
   const totalImporte = rows.reduce((a,b)=>a+Number(b.importe||0),0);
@@ -116,25 +119,88 @@ function generarProforma() {
   if (phTutor)   phTutor.textContent  = tutor;
   if (phPaquete) phPaquete.textContent = `${nSecciones} ${nSecciones===1?'sesión':'sesiones'} - ${totalHoras.toFixed(2)} horas totales`;
 
+  // Guardar estado para PDF servidor
+  window.FILAS_ACTUALES = filas;
+  window.META_ACTUAL = {
+    alumno,
+    tutor,
+    paquete: `${nSecciones} ${nSecciones===1?'sesión':'sesiones'} - ${totalHoras.toFixed(2)} horas totales`
+  };
+
   renderDetalle(filas);
   $('#exportArea')?.classList.remove('hidden');
   $('#pdfBtn').disabled = filas.length === 0;
+  $('#pdfSrvBtn').disabled = filas.length === 0;
 }
 
-/********** PDF **********/
+/********** PDF (cliente con html2pdf.js) **********/
 function descargarPDF() {
   const el = document.getElementById('exportArea');
   if (!el) return;
+
   const alumnoSel = document.getElementById('alumno')?.value || 'Alumno';
   const alumnoSafe = String(alumnoSel).replace(/[\\/:*?"<>|]+/g, '_');
+
   const opt = {
-    margin: [10,10,10,10],
+    margin: [10, 10, 10, 10],
     filename: `Proforma_${alumnoSafe}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    html2canvas: {
+      scale: 1,
+      useCORS: true,
+      logging: false
+    },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    }
   };
+
   html2pdf().set(opt).from(el).save();
+}
+
+/********** PDF (servidor con /api/pdf) **********/
+async function descargarPDFServidor() {
+  const { alumno, tutor, paquete } = window.META_ACTUAL || {};
+  const filas = window.FILAS_ACTUALES || [];
+
+  if (!filas.length) {
+    alert('Primero genera la proforma.');
+    return;
+  }
+
+  const totales = {
+    totalHoras: filas.reduce((a,b)=> a + Number(b.horas||0), 0),
+    totalImporte: filas.reduce((a,b)=> a + Number(b.importe||0), 0)
+  };
+
+  const payload = { alumno, tutor, paquete, filas, totales };
+
+  const resp = await fetch('/api/pdf', {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!resp.ok) {
+    let err = {};
+    try { err = await resp.json(); } catch {}
+    console.error('PDF server error:', err);
+    alert('No se pudo generar el PDF en servidor.');
+    return;
+  }
+
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safe = String(alumno||'Alumno').replace(/[\\/:*?"<>|]+/g,'_');
+  a.href = url;
+  a.download = `Proforma_${safe}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 /********** Init **********/
@@ -164,4 +230,5 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Eventos
   $('#generarBtn').addEventListener('click', generarProforma);
   $('#pdfBtn').addEventListener('click', descargarPDF);
+  $('#pdfSrvBtn').addEventListener('click', descargarPDFServidor);
 });
