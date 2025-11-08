@@ -5,12 +5,14 @@
     "license": "MIT",
     "type": "commonjs",
     "scripts": {
-        "dev": "vercel dev",
         "start": "vercel dev"
     },
     "dependencies": {
         "@sparticuz/chromium": "^122.0.0",
         "pg": "^8.11.5",
         "puppeteer-core": "^22.10.0"
+    },
+    "engines": {
+        "node": ">=18"
     }
 }
