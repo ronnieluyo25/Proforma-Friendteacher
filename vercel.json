@@ -3,7 +3,8 @@
         "api/pdf.js": {
             "runtime": "nodejs20.x",
             "memory": 1024,
-            "maxDuration": 30
+            "maxDuration": 30,
+            "includeFiles": "templates/**" 
         },
         "api/*.js": {
             "runtime": "nodejs20.x"
