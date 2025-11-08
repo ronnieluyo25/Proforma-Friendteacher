@@ -2,17 +2,13 @@
     "name": "friendteacher-proforma",
     "version": "1.0.0",
     "private": true,
-    "license": "MIT",
     "type": "commonjs",
-    "scripts": {
-        "start": "vercel dev"
-    },
-    "dependencies": {
-        "@sparticuz/chromium": "^122.0.0",
-        "pg": "^8.11.5",
-        "puppeteer-core": "^22.10.0"
-    },
     "engines": {
         "node": ">=18"
+    },
+    "dependencies": {
+        "@sparticuz/chromium": "^126.0.0",
+        "pg": "^8.11.5",
+        "puppeteer-core": "^22.12.1"
     }
 }
