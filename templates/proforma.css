@@ -8,27 +8,29 @@
 }
 
 body {
-    font: 12px/1.45 "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    font: 12px/1.5 "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
     color: #0f172a;
 }
 
-/* ====== ENCABEZADO ====== */
+/* ===== ENCABEZADO ===== */
 .doc-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    /* Evita que se pegue al borde */
-    margin-bottom: 24px;
-    /* Más espacio debajo del título */
+    margin-bottom: 32px;
+    /* más espacio bajo el encabezado */
     gap: 16px;
 }
 
 .brand h1 {
-    margin: 0 0 10px;
-    /* Agrega aire debajo del título */
-    font-size: 18px;
-    letter-spacing: .5px;
+    margin: 0 0 16px;
+    /* más separación debajo del título */
+    font-size: 20px;
+    letter-spacing: .6px;
     color: #0ea5e9;
+    line-height: 1.6;
+    /* interlineado mayor */
+    text-align: center;
 }
 
 .brand small {
@@ -38,38 +40,40 @@ body {
 .meta {
     font-size: 11px;
     text-align: right;
+    line-height: 1.8;
+    /* más alto entre líneas */
 }
 
-/* ====== TABLA ====== */
+/* ===== TABLA ===== */
 .table-section {
-    /* Centrada y más angosta para que quepa bien en el A4 */
-    max-width: 170mm;
-    margin: 14px auto 0;
+    max-width: 150mm;
+    /* más angosta y centrada */
+    margin: 10px auto 0;
 }
 
 table.proforma {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    /* Mantiene proporciones fijas */
 }
 
+/* celdas más ligeras y compactas */
 .proforma th,
 .proforma td {
-    border: 1px solid #e5e7eb;
-    padding: 5px 6px;
-    /* Más compacto */
-    font-size: 11px;
-    /* Letra un poco más pequeña */
+    border: 0.5px solid #d1d5db;
+    /* línea más fina */
+    padding: 4px 5px;
+    font-size: 10.5px;
+    /* fuente más chica */
 }
 
 .proforma thead th {
     background: #0ea5e9;
     color: #fff;
     font-weight: 600;
+    letter-spacing: 0.2px;
 }
 
-/* Alineación y totales */
 .proforma td.num {
     text-align: right;
 }
@@ -82,14 +86,13 @@ table.proforma {
 .proforma tfoot td {
     background: #f8fafc;
     font-weight: 700;
-    font-size: 11.5px;
+    font-size: 10.8px;
 }
 
-/* ====== ANCHOS POR COLUMNA ====== */
-/* 1:Fecha  2:Día  3:Tutor  4:Modalidad  5:Horas  6:Precio  7:Importe */
+/* ===== ANCHOS MÁS ESTRECHOS ===== */
 .proforma th:nth-child(1),
 .proforma td:nth-child(1) {
-    width: 22mm;
+    width: 20mm;
 }
 
 .proforma th:nth-child(2),
@@ -99,7 +102,7 @@ table.proforma {
 
 .proforma th:nth-child(3),
 .proforma td:nth-child(3) {
-    width: 32mm;
+    width: 28mm;
 }
 
 .proforma th:nth-child(4),
@@ -109,31 +112,32 @@ table.proforma {
 
 .proforma th:nth-child(5),
 .proforma td:nth-child(5) {
-    width: 16mm;
+    width: 14mm;
     text-align: right;
 }
 
 .proforma th:nth-child(6),
 .proforma td:nth-child(6) {
-    width: 20mm;
+    width: 18mm;
     text-align: right;
 }
 
 .proforma th:nth-child(7),
 .proforma td:nth-child(7) {
-    width: 20mm;
+    width: 18mm;
     text-align: right;
 }
 
-/* ====== COLORES DE TOTALES ====== */
+/* Totales en azul más notorio */
 .proforma tfoot td:last-child {
     color: #0ea5e9;
     font-weight: 800;
 }
 
-/* ====== SECCIÓN DE NOTAS ====== */
+/* ===== CONSIDERACIONES ===== */
 .notes {
-    margin-top: 16px;
+    margin-top: 20px;
+    line-height: 1.6;
 }
 
 .notes h3 {
@@ -148,5 +152,6 @@ table.proforma {
 }
 
 .notes li {
-    margin: 4px 0;
+    margin: 5px 0;
+    font-size: 10.8px;
 }
