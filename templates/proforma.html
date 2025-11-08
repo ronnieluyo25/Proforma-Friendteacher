@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es-PE">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Proforma – FriendTeacher</title>
+    {{INLINE_STYLES}}
+</head>
+
+<body>
+    <header class="doc-header">
+        <div class="brand">
+            <h1>PROFORMA DE CLASES</h1>
+            <small>FriendTeacher</small>
+        </div>
+        <div class="meta">
+            <div><strong>Fecha:</strong> {{FECHA_HOY}}</div>
+            <div><strong>Alumno:</strong> {{ALUMNO}}</div>
+            <div><strong>Tutor/a:</strong> {{TUTOR}}</div>
+            <div><strong>Paquete:</strong> {{PAQUETE}}</div>
+        </div>
+    </header>
+
+    <section class="table-section">
+        <table class="proforma">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Día</th>
+                    <th>Tutor</th>
+                    <th>Modalidad</th>
+                    <th class="num">Horas</th>
+                    <th class="num">Precio</th>
+                    <th class="num">Importe</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{TABLE_ROWS}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="right">TOTAL HORAS</td>
+                    <td class="num strong">{{TOTAL_HORAS}}</td>
+                    <td class="right strong">TOTAL A PAGAR</td>
+                    <td class="num strong">{{TOTAL_IMPORTE}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+
+    <section class="notes">
+        <h3>Consideraciones</h3>
+        <ol>
+            <li>Para reservar las fechas indicadas, el pago deberá efectuarse por adelantado.</li>
+            <li>Clases después de 9:00 p.m., fines de semana o feriados pueden tener tarifa diferenciada.</li>
+            <li>Reprogramaciones con 48 horas de anticipación.</li>
+        </ol>
+    </section>
+</body>
+
+</html>
